@@ -23,9 +23,9 @@ class Room:
     projects: List[int]
 
 class JudgingSystem:
-    def __init__(self, num_judges: int, total_projects: int, num_rooms: int, judgings_per_project: int = 3, demo_mode: bool = False):
-        self.num_judges = num_judges
-        self.total_projects = total_projects
+    def __init__(self, num_rooms: int, judgings_per_project: int, demo_mode: bool = False, num_judges: int = None, total_projects: int = None,):
+        self.num_judges = num_judges if demo_mode else 0
+        self.total_projects = total_projects if demo_mode else 0
         self.num_rooms = num_rooms
         self.judgings_per_project = judgings_per_project
         self.demo_mode = demo_mode
@@ -69,6 +69,7 @@ class JudgingSystem:
     
     def _load_judges_from_csv(self) -> List[Judge]:
         df = pd.read_csv('judges.csv')
+        self.num_judges = len(df)
         judges = []
         for i, row in df.iterrows():
             judge = Judge(
@@ -80,7 +81,8 @@ class JudgingSystem:
         return judges
     
     def _load_projects_from_csv(self) -> List[Project]:
-        df = pd.read_csv('words_numbers.csv')
+        df = pd.read_csv('team.csv')
+        self.total_projects = len(df)
         projects = []
         for _, row in df.iterrows():
             project = Project(
@@ -292,13 +294,14 @@ class AssignmentVerifier:
 
 def main():
     # Get input parameters
-    num_judges = int(input("Enter number of judges: "))
-    total_projects = int(input("Enter total number of projects: "))
-    num_rooms = int(input("Enter number of rooms: "))
     demo_mode = input("Run in demo mode? (y/n): ").lower() == 'y'
+    judgins_per_project = int(input("Enter number of judgings per project: "))
+    num_rooms = int(input("Enter number of rooms: "))
+    num_judges = int(input("Enter number of judges: ")) if demo_mode else None
+    total_projects = int(input("Enter total number of projects: ")) if demo_mode else None
     
     # Initialize system
-    system = JudgingSystem(num_judges, total_projects, num_rooms, demo_mode=demo_mode)
+    system = JudgingSystem(num_rooms=num_rooms, judgings_per_project=judgins_per_project, demo_mode=demo_mode, num_judges=num_judges, total_projects=total_projects)
     
     # Generate and verify assignments with retries
     max_attempts = 10
