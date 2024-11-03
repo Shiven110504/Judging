@@ -65,7 +65,7 @@ Sets up the system based on input parameters.
 
 #### Project Initialization
   - In demo mode, generates random project names and table numbers.
-  - In non-demo mode, loads projects from `words_numbers.csv`.
+  - In non-demo mode, loads projects from `team.csv`.
 
 #### Room Creation
 Distributes projects evenly across the specified number of rooms.
